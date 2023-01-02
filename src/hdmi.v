@@ -15,24 +15,24 @@ module tmds_encoder(
   // Reset
   reg rst0;
   // Unencoded input data
-  reg [7:0] dat0, dat1, dat2, dat3, dat4/*synthesis syn_keep=1*/, dat5, dat6, dat7 ;
+  reg [7:0] dat0, dat1, dat2, dat3, dat4, dat5, dat6, dat7 ;
   // Control signal (hsync and vsync)
-  reg [1:0] ctl0, ctl1, ctl2, ctl3, ctl4/*synthesis syn_keep=1*/, ctl5, ctl6/*synthesis syn_keep=1*/, ctl7, ctl8/*synthesis syn_keep=1*/, ctl9, ctl10/*synthesis syn_keep=1*/, ctl11, ctl12/*synthesis syn_keep=1*/, ctl13, ctl14/*synthesis syn_keep=1*/, ctl15, ctl16, ctl17, ctl18;
+  reg [1:0] ctl0, ctl1, ctl2, ctl3, ctl4, ctl5, ctl6, ctl7, ctl8, ctl9, ctl10, ctl11, ctl12, ctl13, ctl14, ctl15, ctl16, ctl17, ctl18;
   // Display enable signal
   reg den0, den1, den2, den3, den4, den5, den6, den7, den8, den9, den10, den11, den12, den13, den14, den15, den16, den17, not_den18;
   // Parity count of input data
   reg [4:0] par1, par2, par3, par4, par5, par6, par7, par8;
   // Parity bit of input data (if set, input had >= 4 bits set).
-  reg par9, par10/*synthesis syn_keep=1*/, par11, par12/*synthesis syn_keep=1*/, par13, par14/*synthesis syn_keep=1*/, par15, par16, par17, par18;
+  reg par9, par10, par11, par12, par13, par14, par15, par16, par17, par18;
   // Intermediate encoded stage of the input vector.
-  reg [7:0] enc3, enc4, enc5, enc6/*synthesis syn_keep=1*/, enc7, enc8, enc9, enc10, enc11, enc12/*synthesis syn_keep=1*/, enc13, enc14/*synthesis syn_keep=1*/, enc15, enc16, enc17, enc18;
+  reg [7:0] enc3, enc4, enc5, enc6, enc7, enc8, enc9, enc10, enc11, enc12, enc13, enc14, enc15, enc16, enc17, enc18;
   // Count the number of ones in the intermediate encoded data
-  reg signed [3:0] eon10, eon11, eon13, eon14/*synthesis syn_keep=1*/, eon15, eon16, eon17, eon18;
+  reg signed [3:0] eon10, eon11, eon13, eon14, eon15, eon16, eon17, eon18;
   // Is Encoded ONes even?
   reg eve18;
   // Temp values for accumulating the count of ones in the encoded vector.
   reg [3:0] tpa10, tpa11, tpb11;
-  reg [2:0] tpa12, tpb12/*synthesis syn_keep=1*/;
+  reg [2:0] tpa12, tpb12;
   // Pipelined values for updating the bias count.
   reg signed [3:0] inv18, shr18, shl18;
   // Pipelined values for the output TMDS data.
