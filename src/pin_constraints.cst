@@ -10,7 +10,8 @@ IO_LOC  "hdmi_tx_p[3]" 69,68;
 IO_PORT "hdmi_tx_p[3]" PULL_MODE=NONE DRIVE=8;
 IO_LOC  "clk" 52; // Board oscillator, 27MHz.
 IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
-
+IO_LOC  "led_n" 10; 
+IO_PORT "led_n" PULL_MODE=NONE DRIVE=8; 
 
 ////////////////////////////////////////////////////////////
 // Pinout for Tang Nano 4K (GW1NSR-4C GW1NSR-LV4CQN48PC7/I6)
@@ -25,4 +26,6 @@ IO_LOC  "hdmi_tx_p[3]" 28,27;
 IO_PORT "hdmi_tx_p[3]" PULL_MODE=NONE DRIVE=3.5;
 IO_LOC  "clk" 45; // Board oscillator, 27MHz.
 IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "led_n" 10;
+IO_PORT "led_n" PULL_MODE=NONE DRIVE=8;
 */

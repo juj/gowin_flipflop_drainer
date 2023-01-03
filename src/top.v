@@ -2,6 +2,7 @@
 
 module top(
   input clk,
+  output led_n,
   output [3:0] hdmi_tx_n,
   output [3:0] hdmi_tx_p
 );
@@ -23,6 +24,8 @@ module top(
     .CLKIN(clk), .CLKOUT(hdmi_clk_5x), .LOCK(hdmi_clk_lock)
   );
   CLKDIV #(.DIV_MODE("5"), .GSREN("false")) hdmi_clock_div(.CLKOUT(hdmi_clk), .HCLKIN(hdmi_clk_5x), .RESETN(hdmi_clk_lock), .CALIB(1'b1));
+
+  assign led_n = ~hdmi_clk_lock;
 
   display_signal ds(
     .i_pixel_clk(hdmi_clk),
