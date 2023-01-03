@@ -12,7 +12,7 @@ In all cases, timing analysis in the Gowin IDE passes, so this is not a timing c
 
 A few different root causes are suspected. The first, and the most obvious one is that this might be a programming error after all, and something in the design in this repository is not properly implemented. I have diligently examined every line of the design, and think to my best abilities that this should not be a developer error, but cannot naturally 100% rule this out.
 
-Exclusing software causes, this leaves following types of hypotheses:
+Excluding software causes, this leaves following types of hypotheses:
 
 - maybe the most likely hardware cause is that the power supply on the Sipeed Tang boards is not enough to provide the necessary power for the FPGA, and it suffers from a "brownout". This has not been confirmed or disproven yet though.
 
@@ -38,9 +38,9 @@ The following observations have been made:
 
 The repository has been written to be ready for Tang Nano 9K out of the box.
 
-To reproduce the issue, edit file `src/pin_constraints.cst`, and toggle between the commented out lines
-a. `// Uncomment this line to observe the test case work` and
-b. `// Uncomment this line to make the test case break on Tang Nano 9K`
+To reproduce the issue, edit file `src/flipflop_drainer.v`, and toggle between the commented out lines
+a) `// Uncomment this line to observe the test case work` and
+b) `// Uncomment this line to make the test case break on Tang Nano 9K`
 and run both scenarios on the Sipeed Tang Nano 9K to observe how it behaves. First case will produce a test image on the HDMI output, whereas the second case will give a blank screen.
 
 If you want to test the issue out on Tang Nano 4K, do
