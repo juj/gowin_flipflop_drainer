@@ -35,7 +35,7 @@ module top(
   );
 
   flipflop_drainer flipflop_drainer(
-    .hdmi_clk(hdmi_clk),
+    .clk(hdmi_clk),
     .i_hve(hve),
     .i_color({8'(x), 8'(y), 8'(x^y)}),
     .x(x),

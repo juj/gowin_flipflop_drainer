@@ -29,3 +29,19 @@ IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
 IO_LOC "led_n" 10;
 IO_PORT "led_n" PULL_MODE=NONE DRIVE=8;
 */
+/*
+////////////////////////////////////////////////////////////
+// Pinout for Tang Primer 20K (GW2A GW2A-LV18PG256C8/I7)
+IO_LOC  "hdmi_tx_p[0]" H14,H16;
+IO_PORT "hdmi_tx_p[0]" PULL_MODE=NONE DRIVE=8;
+IO_LOC  "hdmi_tx_p[1]" J15,K16;
+IO_PORT "hdmi_tx_p[1]" PULL_MODE=NONE DRIVE=8;
+IO_LOC  "hdmi_tx_p[2]" K14,K15;
+IO_PORT "hdmi_tx_p[2]" PULL_MODE=NONE DRIVE=8;
+IO_LOC  "hdmi_tx_p[3]" G16,H15;
+IO_PORT "hdmi_tx_p[3]" PULL_MODE=NONE DRIVE=8;
+IO_LOC "clk" H11;
+IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "led_n" L16;
+IO_PORT "led_n" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+*/
