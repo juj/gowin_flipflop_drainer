@@ -36,6 +36,8 @@ The following observations have been made:
 
 - Also reducing the frequency that the additions are performed will mitigate the issue, although one must reduce the frequency by a great deal to make the video signal stable, e.g. down to < 20Hz. (change the clock signal in instantiation of `flipflop_drainer` in `top.v`)
 
+- On Tang Nano 9K, having a 600 additions long adder chain ticking at 154 Hz gives an unstable video signal. Splitting this half to 300 additions yields mostly stable video signal. Instantiating two 300 adders long adder chains, where one adds on the posedge of the 154 Hz clock, and the other on the negedge of a 154 Hz clock, yields again a stable image. This suggests that the root cause would be a peak power draw problem, which the power supply would not be adequate to feed.
+
 ## How to run
 
 The repository has been written to be ready for Tang Nano 9K out of the box.
