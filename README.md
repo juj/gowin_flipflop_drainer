@@ -18,7 +18,7 @@ Excluding software causes, this leaves following types of hypotheses:
 
 - one fringe possibility is that maybe there is some kind of internal electromagnetic interference that is generated to the LVDS serialization circuitry when the number of used flip flops in the design grows. This is a wild theory at this point.
 
-- a remote possibility is that maybe there is an issue in the Place and Route tool, which manifests with a higher probability when the size of the design grows, causing the netlist to be incorrectly routed. Although I don't know enough to conclude that either.
+- ~~a remote possibility is that maybe there is an issue in the Place and Route tool, which manifests with a higher probability when the size of the design grows, causing the netlist to be incorrectly routed. Although I don't know enough to conclude that either.~~ It looks like driving the nonsense adder chain with a clock signal that never triggers (while still having the adder chain in the netlist), does not exhibit the problem. So it is safe to conclude that this issue is not caused by a bug in Synthesis or Place and Route tool.
 
 I don't unfortunately have the necessary hardware to undertake high frequency oscilloscope measures to diagnose if one of these issues might be at play, but rather I am at the moment limited to rely on the Gowin design tool and simple GPIO and Gowin Analyser tools to debug the problem.
 
