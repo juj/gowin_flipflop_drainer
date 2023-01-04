@@ -54,6 +54,24 @@ If you want to test the issue out on Tang Primer 20K, do
 2. edit `src/pin_constraints.cst` and uncomment the section related to Tang Primer 20K pinouts, and comment the other sections.
 3. after opening `gowin_flipflop_drainer.gprj` project in Gowin FPGA Designer IDE, double-click on the device line in the project Design tab, and choose `"GW2A-LV18PG256C8/I7"` in the list.
 
+## Questions
+
+#### Isn't this test case too contrived to be representative for real world use?
+
+The reason that I started looking into this in the first place was that my Sipeed-based project has run into random video sync problems, and the only common cause I could understand was that my project "got too big". Removing enough sub-features from my project would magically fix up the issue. So I am observing this kind of behavior in the real world.
+
+However my application does not perform lots of additions every clock cycle. That being said, the Tang Primer 20K is marketed for "AI" and "Deep Learning", so it would be quite realistic for those types of use cases to fill up a FPGA with many parallel operations on large matrices, i.e. perform large multiply-and-add operations.
+
+#### Is this a problem with Sipeed boards only, or are all Gowin FPGAs affected?
+
+I don't know. It could be that the root issue is with Sipeed's power delivery, or it could be that the issue is with internal power management inside Gowin FPGAs themselves. I will update once more information becomes available.
+
+#### Is the new Tang Nano 2K affected?
+
+(Tang Nano 20K: https://twitter.com/sipeedio/status/1582337787574951938?lang=en )
+
+I don't know. I don't have one to test. I have tested that Tang Nano 4K, Tang Nano 9K and Tang Primer 20K all do suffer from this issue though.
+
 ## Discussion
 
 Please visit the following forum threads to find conversation about the problem:
