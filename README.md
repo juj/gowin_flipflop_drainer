@@ -34,26 +34,23 @@ The following observations have been made:
 
 - Reducing the output video pixel clock speed (smaller resolution or smaller refresh rate) will mitigate the issue.
 
+- Also reducing the frequency that the additions are performed will mitigate the issue, although one must reduce the frequency by a great deal to make the video signal stable, e.g. down to < 20Hz. (change the clock signal in instantiation of `flipflop_drainer` in `top.v`)
+
 ## How to run
 
 The repository has been written to be ready for Tang Nano 9K out of the box.
 
-To reproduce the issue, edit file `src/flipflop_drainer.v`, and toggle between the commented out lines
-a) `// Uncomment this line to observe the test case work` and
-b) `// Uncomment this line to make the test case break on Tang Nano 9K`
-and run both scenarios on the Sipeed Tang Nano 9K to observe how it behaves. First case will produce a test image on the HDMI output, whereas the second case will give a blank screen.
+To reproduce the issue, build and run the project on your Tang Nano 9K board. To see that there should be a stable video underneath all of this, i.e. to reproduce a working video signal, edit file `src/flipflop_drainer.v`, and uncomment the line marked with `// Uncomment this line`.
 
 If you want to test the issue out on Tang Nano 4K, do
 1. edit `src/board_config.v` and uncomment line `define GW1N4` and comment out the other lines.
 2. edit `src/pin_constraints.cst` and uncomment the section related to Tang Nano 4K pinouts, and comment the other sections.
-3. edit `src/flipflop_drainer.v` and uncomment the line that says `// Uncomment this line to make the test case break on Tang Nano 4K` and comment out the other lines.
-4. after opening `gowin_flipflop_drainer.gprj` project in Gowin FPGA Designer IDE, double-click on the device line in the project Design tab, and choose `"GW1NSR-LV4CQN48PC7/I6"` in the list.
+3. after opening `gowin_flipflop_drainer.gprj` project in Gowin FPGA Designer IDE, double-click on the device line in the project Design tab, and choose `"GW1NSR-LV4CQN48PC7/I6"` in the list.
 
 If you want to test the issue out on Tang Primer 20K, do
 1. edit `src/board_config.v` and uncomment line `define GW2A` and comment out the other lines.
 2. edit `src/pin_constraints.cst` and uncomment the section related to Tang Primer 20K pinouts, and comment the other sections.
-3. edit `src/flipflop_drainer.v` and uncomment the line that says `// Uncomment this line to make the test case break on Tang Primer 20K` and comment out the other lines.
-4. after opening `gowin_flipflop_drainer.gprj` project in Gowin FPGA Designer IDE, double-click on the device line in the project Design tab, and choose `"GW2A-LV18PG256C8/I7"` in the list.
+3. after opening `gowin_flipflop_drainer.gprj` project in Gowin FPGA Designer IDE, double-click on the device line in the project Design tab, and choose `"GW2A-LV18PG256C8/I7"` in the list.
 
 ## Discussion
 
