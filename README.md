@@ -32,7 +32,7 @@ The following observations have been made:
 
 - In `flipflop_drainer.v` one can vary the number of nonsense adders that is used in the design by adjusting the register `aXXX` that is referenced in the addition. There is a smooth ramp of `< K` adders: stable signal, `K < x < M` adders: unstable signal, `> M` adders: black image, no sync at all, i.e. the more adders, the more likely the video sync will glitch, and at some point, video sync will vanish completely.
 
-- Reducing the output video pixel clock speed (smaller resolution or smaller refresh rate) will mitigate the issue.
+- Reducing the output video pixel clock speed (smaller resolution or smaller refresh rate) will mitigate the issue. Lowering to 1280x720 with 74.25 MHz pixel clock is not enough, the sync issue will persist there; though lowering to 640x480 with 25.2 MHz pixel clock will avoid the sync issues.
 
 - Also reducing the frequency that the additions are performed will mitigate the issue, although one must reduce the frequency by a great deal to make the video signal stable, e.g. down to < 20Hz. (change the clock signal in instantiation of `flipflop_drainer` in `top.v`)
 
