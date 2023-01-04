@@ -88,6 +88,16 @@ I don't know. It could be that the root issue is with Sipeed's power delivery, o
 
 I don't know. I don't have one to test. I have tested that Tang Nano 4K, Tang Nano 9K and Tang Primer 20K all do suffer from this issue though.
 
+## Workarounds/Solutions
+
+This section lists different workarounds that I know about:
+
+- Keep the size of your design small. On Tang Nano 9K, using less than 30% of the resources should do the trick.
+- Reduce the video pixel clock speed. A 74.25 MHz pixel clock speed is still too fast, but e.g. a 25.2 MHz 640x480 VGA pixel clock speed does not seem to be affected by this issue.
+- Subdivide the computation in your design in half between positive and negative clock edges of the same clock. This seems to mitigate the issue, suggesting a peak power draw problem. See the branch [pos_and_negedge_adders](https://github.com/juj/gowin_flipflop_drainer/compare/main...pos_and_negedge_adders) for details.
+
+If a solution becomes available, I will update this section.
+
 ## Discussion
 
 Please visit the following forum threads to find conversation about the problem:
