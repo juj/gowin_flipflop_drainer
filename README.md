@@ -2,7 +2,7 @@
 
 **2023/01/03**: This repository contains a test project that illustrates a suspected hardware failure of the Sipeed Tang Nano 4K, 9K and Primer 20K boards (Gowin FPGAs).
 
-When outputting DVI-D video signal at a relatively high pixel clock, in this case 1280x1024 @ DMT with 106.2 MHz pixel clock (531 MHz 5:1 PLL clock), the video output signal from the Gowin FPGA will become unstable when the size of the design otherwise grows past an unspecified threshold.
+When outputting DVI-D video signal at a relatively high pixel clock, in this case 1280x1024 @ DMT with 106.2 MHz pixel clock (531 MHz 5:1 PLL clock), the video output signal from the Gowin FPGA will become unstable when the size of the design otherwise grows past an unspecified threshold. (the same issue is now reproduced to also occur with a more modest 1280x720 with 74.25 MHz pixel clock, although not with a 640x480 25.2 MHz pixel clock)
 
 To demonstrate the problem, this design implements a simple static test image DVI-D output, with the addition that the file `flipflop_drainer.v` implements a long sequence of nonsense adders to fill up unused flipflop resources of the board. This simulates a design "growing in size". When enough flipflops are in use (for example, on Nano 9K, ~28% or more, i.e. ~300 adders), the Sipeed boards will fail to produce a stable DVI-D video signal out at such a high pixel clock speed, and one is forced to either reduce the size of the design, or reduce the output video resolution.
 
