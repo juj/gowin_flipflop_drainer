@@ -20,7 +20,10 @@ module top(
 
   // Calculate nonsense additions at low clock frequency.
   // You can change the clock signal here to adder_clk[7] to get more stable video signal, and adder_clk[0] to get more unstable video signal.
-  flipflop_drainer flipflop_drainer(.clk(adder_clk[0]), .out(led_n)); // Output the result of additions to a led so it does not get optimized out.
+  reg o1, o2;
+  flipflop_drainer flipflop_drainer(.clk(adder_clk[5]), .out(o1)); // Add on the posedge of the clock signal.
+  flipflop_drainer flipflop_drainer2(.clk(~adder_clk[5]), .out(o2)); // Add on the negedge of the clock signal.
+  assign led_n = o1 ^ o2;
 
   // Generate a video signal: this part is completely separate from the above nonsense adders.
   pll #(.FBDIV_SEL(58), .IDIV_SEL(2), .ODIV_SEL(2)) hdmi_pll(.CLKIN(clk), .CLKOUT(hdmi_clk_5x), .LOCK(hdmi_clk_lock)); // Generate a 27*59/3 = 531 MHz 5:1 HDMI clock signal

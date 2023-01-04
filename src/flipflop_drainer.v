@@ -9,7 +9,7 @@ module flipflop_drainer(
     out <= ^a450;
 `endif
 `ifdef GW1N9
-    out <= ^a950;
+    out <= ^a300;
 `endif
 `ifdef GW2A
     out <= ^a1500;
