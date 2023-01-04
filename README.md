@@ -1,6 +1,14 @@
 # Gowin Flipflop Drainer
 
-**2023/01/03**: This repository contains a test project that illustrates a suspected hardware failure of the Sipeed Tang Nano 4K, 9K and Primer 20K boards (Gowin FPGAs).
+**2023/01/03**
+
+I have been working on my FPGA project for about a year and a half, based on the Sipeed proto dev boards. Everything went smoothly at first, but for the past six months, I have been running into mysterious instabilities, which manifest in video signal instabilities (my HDMI project performs video output at high resolutions).
+
+For a long while, I was hunting ghosts in my design, timing analysis, or other possible problems. The only common pattern I observed was that *if I kept my design small, things would work properly on the Sipeed boards*. After extensive testing, I boiled it down to this test case.
+
+<img src='./img/glitch.gif'>
+
+This repository contains a test project that illustrates a suspected hardware failure of the Sipeed Tang Nano 4K, 9K and Primer 20K boards (Gowin FPGAs).
 
 When outputting DVI-D video signal at a relatively high pixel clock, in this case 1280x1024 @ DMT with 106.2 MHz pixel clock (531 MHz 5:1 PLL clock), the video output signal from the Gowin FPGA will become unstable when the size of the design otherwise grows past an unspecified threshold. (the same issue is now reproduced to also occur with a more modest 1280x720 with 74.25 MHz pixel clock, although not with a 640x480 25.2 MHz pixel clock)
 
@@ -56,6 +64,14 @@ If you want to test the issue out on Tang Primer 20K, do
 
 ## Questions
 
+#### Isn't this just a timing closure problem? Fix your timings!
+
+No, timing analysis is undertaken by the Gowin Analyzer, and it looks proper and comes out "blue" in the analyzer (in Gowin IDE, red heading text highlights timing errors).
+
+<img src='./img/timing_analysis.png'>
+
+Timings are met.
+
 #### Isn't this test case too contrived to be representative for real world use?
 
 The reason that I started looking into this in the first place was that my Sipeed-based project has run into random video sync problems, and the only common cause I could understand was that my project "got too big". Removing enough sub-features from my project would magically fix up the issue. So I am observing this kind of behavior in the real world.
@@ -66,7 +82,7 @@ However my application does not perform lots of additions every clock cycle. Tha
 
 I don't know. It could be that the root issue is with Sipeed's power delivery, or it could be that the issue is with internal power management inside Gowin FPGAs themselves. I will update once more information becomes available.
 
-#### Is the new Tang Nano 2K affected?
+#### Is the new Tang Nano 20K affected?
 
 (Tang Nano 20K: https://twitter.com/sipeedio/status/1582337787574951938?lang=en )
 
