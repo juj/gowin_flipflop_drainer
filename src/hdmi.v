@@ -53,11 +53,9 @@ module tmds_encoder(
     ctl1 <= rst0 ? 2'b0 : ctl0;
     den1 <= rst0 ? 1'b0 : den0;
 
-    // Clock 2: remove any active control bits if display_enable is active,
-    //          (control bits can never be set when in DE area of the image),
-    //          also force image data to zero if inside display blank (or reset)
+    // Clock 2: sanitize image data to zero if inside display blank (or reset)
     dat2 <= den1 ? dat1 : 8'b0;
-    ctl2 <= den1 ? 2'b0 : ctl1;
+    ctl2 <= ctl1;
     den2 <= den1;
 
     // Clocks 3-7: Pipeline 'dat' for the duration of the parity encoding below.
