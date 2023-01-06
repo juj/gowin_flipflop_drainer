@@ -80,7 +80,7 @@ However my application does not perform lots of additions every clock cycle. Tha
 
 #### Is this a problem with Sipeed boards only, or are all Gowin FPGAs affected?
 
-I don't know. It could be that the root issue is with Sipeed's power delivery, or it could be that the issue is with internal power management inside Gowin FPGAs themselves. I will update once more information becomes available.
+~~I don't know. It could be that the root issue is with Sipeed's power delivery, or it could be that the issue is with internal power management inside Gowin FPGAs themselves. I will update once more information becomes available.~~
 
 **Update 2023/01/06**: It looks like this issue affects Gowin FPGAs in general, and it is not just an issue with Sipeed boards. We have been able to reproduce the issue using a FPGA chip that was sourced from Mouser, and using a custom PCB board.
 
