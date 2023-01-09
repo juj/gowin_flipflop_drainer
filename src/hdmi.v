@@ -1,7 +1,6 @@
 // tmds_encoder performs Transition-minimized differential signaling (TMDS) encoding of
 // 8-bits of pixel data and 2-bits of control data to a 10-bit TMDS encoded format.
 // Requires synthesizing with System Verilog 2017.
-// (this module is unit tested with cocotb framework)
 module tmds_encoder(
   input i_hdmi_clk,         // HDMI pixel clock
   input i_reset,            // reset (active high)
@@ -10,213 +9,92 @@ module tmds_encoder(
   input i_display_enable,   // high=pixel data active. low=display is in blanking area
   output reg [9:0] o_tmds   // encoded 10-bit TMDS data
 );
-  // Intermediate pipelined variables: the number after each reg specifies the clock cycle of the pipeline the values are accessed at.
+ // wire [1:0] ctrl = {2{~i_reset}} & i_ctrl; // clear control data if in reset state
+    reg [1:0] ctrl_1, ctrl_2, ctrl_3, ctrl_4, ctrl_5, ctrl_6, ctrl_7, ctrl_8, ctrl_9, ctrl_10, ctrl_11;
+  reg blank[10:0]; // 11 clock cycles pipelined version of "i_reset | ~i_display_enable;". If high, send blank data (in reset or in image blank)
 
-  // Reset
-  reg rst0;
-  // Unencoded input data
-  reg [7:0] dat0, dat1, dat2, dat3, dat4, dat5, dat6, dat7 ;
-  // Control signal (hsync and vsync)
-  reg [1:0] ctl0, ctl1, ctl2, ctl3, ctl4, ctl5, ctl6, ctl7, ctl8, ctl9, ctl10, ctl11, ctl12, ctl13, ctl14, ctl15, ctl16, ctl17, ctl18;
-  // Display enable signal
-  reg den0, den1, den2, den3, den4, den5, den6, den7, den8, den9, den10, den11, den12, den13, den14, den15, den16, den17, not_den18;
-  // Parity count of input data
-  reg [4:0] par1, par2, par3, par4, par5, par6, par7, par8;
-  // Parity bit of input data (if set, input had >= 4 bits set).
-  reg par9, par10, par11, par12, par13, par14, par15, par16, par17, par18;
-  // Intermediate encoded stage of the input vector.
-  reg [7:0] enc3, enc4, enc5, enc6, enc7, enc8, enc9, enc10, enc11, enc12, enc13, enc14, enc15, enc16, enc17, enc18;
-  // Count the number of ones in the intermediate encoded data
-  reg signed [3:0] eon10, eon11, eon13, eon14, eon15, eon16, eon17, eon18;
-  // Is Encoded ONes even?
-  reg eve18;
-  // Temp values for accumulating the count of ones in the encoded vector.
-  reg [3:0] tpa10, tpa11, tpb11;
-  reg [2:0] tpa12, tpb12;
-  // Pipelined values for updating the bias count.
-  reg signed [3:0] inv18, shr18, shl18;
-  // Pipelined values for the output TMDS data.
-  reg [9:0] tmds_blank18, tmds_even18, tmds_pos18, tmds_neg18;
-  // 'bias' stores the running TMDS ones vs zeros balance count. If > 0, we've sent more ones to the bus,
-  // if < 0, we've sent more zeroes than ones, if == 0, we are at equal balance.
-  reg signed [3:0] bias;
+//  wire parity = {$countones(i_data), !i_data[0]} > 8;                 // calculate a xor value based on if ones dominate the input, break ties on lowest bit.
+  reg parity_1, parity_2, parity_3, parity_4, parity_5, parity_6, parity_7, parity_8, parity_9, parity_10, parity_11;
+//  wire [7:0] enc = {{7{parity}} ^ enc[6:0] ^ i_data[7:1], i_data[0]}; // intermediate encode step
+  reg [7:0] enc_1, enc_2, enc_3, enc_4, enc_5, enc_6, enc_7, enc_8, enc_9, enc_10, enc_11;
 
+//  wire signed [4:0] balance = {4'($countones(enc)),1'b0} - 5'b01000; // calculate # of ones vs # of zeros bit balance
+//  reg signed [4:0] balance, balance_p;
+  reg signed [4:0] bias;                                             // keep a record of bit bias of previously sent data
+//  wire bias_vs_balance = (bias[4] == balance[4]);                    // track from sign bits if balance is going away or towards bias
+  reg bias_vs_balance;
+  reg [7:0] data_1, data_2;
+
+  reg signed [4:0] balance_5, balance_6, balance_7, balance_8, balance_9, balance_10, balance_11;
+
+  // encode pixel color data with at most 5 bit 0<->1 transitions, and update bias count.
   always @(posedge i_hdmi_clk) begin
-    // Clock 0: register inputs
-    rst0 <= i_reset;
-    dat0 <= i_data;
-    ctl0 <= i_ctrl;
-    den0 <= i_display_enable;
+    // clock 0 -> clock 1
+    ctrl_1 <= {2{~i_reset}} & i_ctrl;
+    blank <= { blank[9:0], i_reset | ~i_display_enable };
+    parity_1 <= {4'($countones(i_data)), !i_data[0]} > 8;
+    data_1 <= i_data;
 
-    // Clock 1: handle reset early by folding it into the other fields
-    dat1 <= dat0;
-    ctl1 <= rst0 ? 2'b0 : ctl0;
-    den1 <= rst0 ? 1'b0 : den0;
+    ctrl_2 <= ctrl_1;
+    parity_2 <= parity_1;
+    data_2 <= data_1;
+    // clock 1 -> clock 2
+    parity_3 <= parity_2;
+    ctrl_3 <= ctrl_2;
+    enc_3 <= { parity_2 ^ data_2[0] ^ data_2[1] ^ data_2[2] ^ data_2[3] ^ data_2[4] ^ data_2[5] ^ data_2[6] ^ data_2[7],
+                          data_2[0] ^ data_2[1] ^ data_2[2] ^ data_2[3] ^ data_2[4] ^ data_2[5] ^ data_2[6],
+               parity_2 ^ data_2[0] ^ data_2[1] ^ data_2[2] ^ data_2[3] ^ data_2[4] ^ data_2[5],
+                          data_2[0] ^ data_2[1] ^ data_2[2] ^ data_2[3] ^ data_2[4],
+               parity_2 ^ data_2[0] ^ data_2[1] ^ data_2[2] ^ data_2[3],
+                          data_2[0] ^ data_2[1] ^ data_2[2],
+               parity_2 ^ data_2[0] ^ data_2[1],
+                          data_2[0] };
+    // clock 2 -> clock 3
+    enc_4    <= enc_3;
+    ctrl_4 <= ctrl_3;
+    parity_4 <= parity_3;
 
-    // Clock 2: sanitize image data to zero if inside display blank (or reset)
-    dat2 <= den1 ? dat1 : 8'b0;
-    ctl2 <= ctl1;
-    den2 <= den1;
+    balance_5 <= $countones(enc_4);
+    enc_5    <= enc_4;
+    ctrl_5 <= ctrl_4;
+    parity_5 <= parity_4;
 
-    // Clocks 3-7: Pipeline 'dat' for the duration of the parity encoding below.
-    dat3 <= dat2;
-    dat4 <= dat3;
-    dat5 <= dat4;
-    dat6 <= dat5;
-    dat7 <= dat6;
+    balance_6 <= balance_5;
+    enc_6    <= enc_5;
+    ctrl_6 <= ctrl_5;
+    parity_6 <= parity_5;
 
-    // Clocks 1-8: Calculate parity, i.e. whether the input vector 'dat' has more
-    //             ones in it than zeros. If it has 4 zeros and 4 ones, use ~dat[0]
-    //             as a tie. To do that, start with constant vector 00001, and for
-    //             each bit set in input 'dat', shift 'par' left by one place, filling
-    //             in ones. At the end par[4] will specifies whether there were more
-    //             ones than zeroes.
-    par1 <= 5'b00001;
-    par2 <= dat1[1] ? {par1[3:0], 1'b1} : par1; // = 000ab (a,b=unknown, 000=zeroes)
-    par3 <= dat2[2] ? {par2[3:0], 1'b1} : par2; // = 00abc
-    par4 <= dat3[3] ? {par3[3:0], 1'b1} : par3; // = 0abcd
-    par5 <= dat4[4] ? {par4[3:0], 1'b1} : par4; // = abcdx (x=don't care, rely on optimizer to clear these away)
-    par6 <= dat5[5] ? {par5[3:0], 1'b1} : par5; // = bcdxx
-    par7 <= dat6[6] ? {par6[3:0], 1'b1} : par6; // = cdxxx
-    par8 <= dat7[7] ? {par7[3:0], 1'b1} : par7; // = dxxxx
+    balance_7 <= balance_6;
+    enc_7    <= enc_6;
+    ctrl_7 <= ctrl_6;
+    parity_7 <= parity_6;
 
-    // Clocks 9-18: No further calculation needed for parity. Keep pipelining it forward
-    //              in a single bit vector.
-    par9 <= par8[4]; // At the end of computation par[4] records the parity.
-    par10 <= par9;
-    par11 <= par10;
-    par12 <= par11;
-    par13 <= par12;
-    par14 <= par13;
-    par15 <= par14;
-    par16 <= par15;
-    par17 <= par16;
-    par18 <= par17;
+    balance_8 <= {4'(balance_7),1'b0};
+    enc_8    <= enc_7;
+    ctrl_8 <= ctrl_7;
+    parity_8 <= parity_7;
 
-    // Clocks 3-18: No more changes needed to the Display Enable signal, flow it through the pipeline
-    den3 <= den2;
-    den4 <= den3;
-    den5 <= den4;
-    den6 <= den5;
-    den7 <= den6;
-    den8 <= den7;
-    den9 <= den8;
-    den10 <= den9;
-    den11 <= den10;
-    den12 <= den11;
-    den13 <= den12;
-    den14 <= den13;
-    den15 <= den14;
-    den16 <= den15;
-    den17 <= den16;
-    not_den18 <= ~den17;
+    // clock 3 -> clock 4
+    balance_9 <= balance_8 - 5'b01000;
+    enc_9    <= enc_8;
+    ctrl_9 <= ctrl_8;
+    parity_9 <= parity_8;
 
-    // Clocks 3-18: Pipeline ctrl data (hsync & vsync), no changes needed.
-    ctl3 <= ctl2;
-    ctl4 <= ctl3;
-    ctl5 <= ctl4;
-    ctl6 <= ctl5;
-    ctl7 <= ctl6;
-    ctl8 <= ctl7;
-    ctl9 <= ctl8;
-    ctl10 <= ctl9;
-    ctl11 <= ctl10;
-    ctl12 <= ctl11;
-    ctl13 <= ctl12;
-    ctl14 <= ctl13;
-    ctl15 <= ctl14;
-    ctl16 <= ctl15;
-    ctl17 <= ctl16;
-    ctl18 <= ctl17;
+    balance_10 <= balance_9;
+    enc_10    <= enc_9;
+    ctrl_10 <= ctrl_9;
+    parity_10 <= parity_9;
 
-    // Clocks 3-9: perform intermediate encoded vector 'enc' of the input 'data' field. At the
-    //             end of the encoding, the DVI spec says the encoded vector should look like
-    //             follows:
-    // enc <= { parity ^ data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7],
-    //                   data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6],
-    //          parity ^ data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5],
-    //                   data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4],
-    //          parity ^ data[0] ^ data[1] ^ data[2] ^ data[3],
-    //                   data[0] ^ data[1] ^ data[2],
-    //          parity ^ data[0] ^ data[1],
-    //                   data[0] };
-    //
-    // Calculate it across a few clock cycles to avoid high complexity per clock. (ignore parity first)
-    // Bit lanes after each clock cycle:
-    //                [7]     [6]    [5]   [4]  [3] [2] [1] [0]
-    // Clock 2:        7       6      5     4    3   2   1   0
-    // Clock 3:       76      65     54    43   32  21  10   0
-    // Clock 4:     7654    6543   5432  4321 3210 210  10   0
-    // Clock 5: 76543210 6543210 543210 43210 3210 210  10   0
+    // clock 4 -> clock 5
+    bias_vs_balance <= (bias[4] == balance_10[4]);
+    balance_11 <= balance_10;
+    enc_11    <= enc_10;
+    ctrl_11 <= ctrl_10;
+    parity_11 <= parity_10;
 
-    enc3 <= {dat2[7:1]^dat2[6:0], dat2[  0]};
-    enc4 <= {enc3[7:2]^enc3[5:0], enc3[1:0]};
-    enc5 <= {enc4[7:4]^enc4[3:0], enc4[3:0]};
-    enc6 <= enc5;
-    enc7 <= enc6;
-    enc8 <= enc7;
-
-    // Clock 9: Meanwhile, parity computation has completed, so apply the final parity XOR to the
-    //          intermediate encoded vector.
-    enc9 <= enc8 ^ {4{par8[4], 1'b0}};
-    enc10 <= enc9;
-    enc11 <= enc10;
-    enc12 <= enc11;
-    enc13 <= enc12;
-    enc14 <= enc13;
-    enc15 <= enc14;
-    enc16 <= enc15;
-    enc17 <= enc16;
-    enc18 <= enc17;
-
-    // Clocks 10-17: calculate 'eon' (Encoded ONes vs zeros): a signed count that specifies whether
-    //               vector 'enc' has more ones or zeroes in it.
-    tpa10 <= enc9[3:0] ^ enc9[7:4]; // Fold the 8 bit enc vector into two 4-bit halves, and half-
-    tpa11 <= tpa10;     // Then calculate the number of ones in them in parallel
-    tpb11 <= enc10[3:0] & enc10[7:4];//tpb10;
-    tpa12 <= $countones(tpa11);     // Then calculate the number of ones in them in parallel
-    tpb12 <= $countones(tpb11);
-    eon13 <= tpa12 + {tpb12, 1'b0}; // Then use a 3-bit + 4-bit addition to bring the full count.
-    eon14 <= eon13 - 3'd4;          // And make the result signed.
-    eon15 <= eon14;
-    eon16 <= eon15;
-    eon17 <= eon16;
-    eon18 <= eon17;
-
-    // 'eon17' is a count of balance of ones vs zeros in input encoded vector 'enc':
-    //        #ones: 8 7 6 5 4  3  2  1  0
-    // #ones-#zeros: 8 6 4 2 0 -2 -4 -6 -8
-    // value of eon: 4 3 2 1 0 -1 -2 -3 -4
-
-    // Pipeline a few finishing touches:
-    eve18 <= eon17 == 0;                      // is the balance equal (zero)?
-    inv18 <= par17 ? -eon17     : eon17;      // invert balance count based on parity.
-    shr18 <= par17 ? eon17      : eon17-1'b1; // right shift balance count based on parity.
-    shl18 <= par17 ? eon17-1'b1 : eon17;      // left shift balance count based on parity.
-    tmds_blank18 <= {~ctl17[1], 9'b101010100} ^ {10{ctl17[0]}};
-    tmds_even18 <= {par17, ~par17, {8{par17}} ^ enc17};
-    tmds_pos18 <= {1'b1, ~par17, 8'hff ^ enc17};
-    tmds_neg18 <= {1'b0, ~par17,         enc17};
-
-    // Clocks 14-17 above:
-    // These are "empty" filler clock stages that contain no computations on any of the variables,
-    // but they only perform direct passthrough of the values that have been computed so far.
-    // Gowin IDE Analyzer reports that this improves max. timing performance.
-
-    // Clock 18: finally output the TMDS encoded value, and update bias value
-    if (not_den18) begin // In display blank?
-      o_tmds <= tmds_blank18;              // Output control words for hsync and vsync
-      bias <= 0;                           // Bias resets to zero in blank
-    end else if (eve18 || bias == 0) begin // If current bias is even, or encoded balance is even..
-      o_tmds <= tmds_even18;               // .. use a specific 'even' state TMDS formula.
-      bias <= bias + inv18;                // This does not seem to be strictly necessary, you can try removing this else block for tiny bit more performance.
-    end else if (bias[3] == eon18[3]) begin // Otherwise, noneven bias and balance, so use the main TMDS encoding formula
-      o_tmds <= tmds_pos18;
-      bias <= bias - shr18; // and update running bias of ones vs zeros sent.
-    end else begin
-      o_tmds <= tmds_neg18;
-      bias <= bias + shl18;
-    end
+    // clock 5 -> clock 6
+    o_tmds <= blank[10] ? {~ctrl_11[1], 9'b101010100} ^ {10{ctrl_11[0]}} : {bias_vs_balance, ~parity_11, {8{bias_vs_balance}} ^ enc_11};
+    bias <= blank[10] ? 0 : 5'(bias + ({5{bias_vs_balance}} ^ balance_11) + {3'b0, bias_vs_balance^parity_11, bias_vs_balance});
   end
 endmodule
 
