@@ -6,7 +6,7 @@ module flipflop_drainer(
 );
   always @(posedge clk) begin
 `ifdef GW1N4
-    out <= ^a450;
+    out <= ^a408;
 `endif
 `ifdef GW1N9
     out <= ^a950;
