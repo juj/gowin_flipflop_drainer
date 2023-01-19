@@ -1,10 +1,10 @@
 // Global project-wide configuration defines. Include this in the beginning of each file.
 
 // Uncomment this to target Sipeed Tang Nano 4K (which has the Gowin FPGA model GW1NSR-4C GW1NSR-LV4CQN48PC6/I5)
-//`define GW1N4
+`define GW1N4
 
 // Uncomment this to target Sipeed Tang Nano 9K (which has the Gowin FPGA model GW1NR-9C GW1NR-LV9QN88PC6/I5)
-`define GW1N9
+//`define GW1N9
 
 // Uncomment this to target Sipeed Tang Primer 20K (which has the Gowin FPGA model GW2A GW2A-LV18PG256C8/I7)
 //`define GW2A
