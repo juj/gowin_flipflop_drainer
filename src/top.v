@@ -12,8 +12,8 @@ module top(
 
   // Generate a video signal: this part is completely separate from the above nonsense adders.
   pll #(
-//.FBDIV_SEL(36), .IDIV_SEL(4), .ODIV_SEL(4) // 199.80 MHz:   800x600@60Hz @  39.96 MHz pixel clock: video sync flickers
-//.FBDIV_SEL(36), .IDIV_SEL(3), .ODIV_SEL(4) // 249.75 MHz:   800x600@72Hz @  49.95 MHz pixel clock: video sync flickers
+//.FBDIV_SEL(36), .IDIV_SEL(4), .ODIV_SEL(4) // 199.80 MHz:   800x600@60Hz @  39.96 MHz pixel clock: video sync flickers on USB3HDCAP unless flipflop_drainer adder chain is disabled
+//.FBDIV_SEL(36), .IDIV_SEL(3), .ODIV_SEL(4) // 249.75 MHz:   800x600@72Hz @  49.95 MHz pixel clock: video sync flickers on USB3HDCAP unless flipflop_drainer adder chain is disabled
 //.FBDIV_SEL(10), .IDIV_SEL(0), .ODIV_SEL(4) // 297.00 MHz:  1024x768@56Hz @  59.40 MHz pixel clock: rare intermittent individual pixel glitches
 //.FBDIV_SEL(11), .IDIV_SEL(0), .ODIV_SEL(2) // 324.00 MHz:  1024x768@60Hz @  64.80 MHz pixel clock: individual pixel glitches
   .FBDIV_SEL(60), .IDIV_SEL(4), .ODIV_SEL(2) // 329.40 MHz:  1024x768@70Hz @  65.88 MHz pixel clock: no video sync, or glitchy video
