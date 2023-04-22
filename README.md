@@ -56,6 +56,10 @@ The following observations have been made:
 
 The repository has been written to be ready for Tang Nano 9K out of the box.
 
+<img src='./img/branches.png'>
+
+If you are testing on Gowin-4/Tang Nano 4K, check out the `tang_nano_4k` branch in this repository.
+
 To reproduce the issue, build and run the project on your Tang Nano 9K board. To see that there should be a stable video underneath all of this, i.e. to reproduce a working video signal, edit file `src/flipflop_drainer.v`, and uncomment the line marked with `// Uncomment this line`.
 
 If you want to test the issue out on Tang Nano 4K, do
