@@ -12,5 +12,6 @@
         <File path="src/pll.v" type="file.verilog" enable="1"/>
         <File path="src/top.v" type="file.verilog" enable="1"/>
         <File path="src/pin_constraints.cst" type="file.cst" enable="1"/>
+        <File path="src/constraints.sdc" type="file.sdc" enable="1"/>
     </FileList>
 </Project>
